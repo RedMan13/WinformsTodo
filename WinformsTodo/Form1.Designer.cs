@@ -34,7 +34,10 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(3444, 1421);
+            AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            ClientSize = new Size(464, 321);
+            FormBorderStyle = FormBorderStyle.FixedDialog;
+            MaximizeBox = false;
             Name = "Form1";
             Text = "Form1";
             ResumeLayout(false);
