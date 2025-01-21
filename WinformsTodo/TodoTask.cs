@@ -14,12 +14,16 @@ namespace WinformsTodo
         public DateTime due { get; set; }
         public bool complete { get; set; }
 
-        public TodoTask(string title, DateTime due, bool complete)
+        public TodoTask(string title, DateTime due, bool complete = false)
         {
             this.id = ids++;
             this.title = title;
             this.due = due;
             this.complete = complete;
+        }
+        public string ToString()
+        {
+            return due.ToShortDateString() + " | " + title;
         }
     }
 }

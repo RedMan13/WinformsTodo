@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            ListViewItem listViewItem1 = new ListViewItem(new string[] { "aaaaaa" }, -1, Color.Empty, Color.LightCoral, null);
+            ListViewItem listViewItem2 = new ListViewItem("dfdfgddf");
             groupBox1 = new GroupBox();
             btnClear = new Button();
             btnAdd = new Button();
@@ -36,7 +38,10 @@
             label1 = new Label();
             txtTitle = new TextBox();
             groupBox2 = new GroupBox();
+            btnEdit = new Button();
+            btnRemove = new Button();
             lvTasks = new ListView();
+            columnHeader1 = new ColumnHeader();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
             SuspendLayout();
@@ -58,7 +63,7 @@
             // 
             // btnClear
             // 
-            btnClear.Location = new Point(106, 75);
+            btnClear.Location = new Point(103, 75);
             btnClear.Name = "btnClear";
             btnClear.Size = new Size(44, 23);
             btnClear.TabIndex = 5;
@@ -68,11 +73,11 @@
             // 
             // btnAdd
             // 
-            btnAdd.Location = new Point(156, 75);
+            btnAdd.Location = new Point(153, 75);
             btnAdd.Name = "btnAdd";
-            btnAdd.Size = new Size(41, 23);
+            btnAdd.Size = new Size(44, 23);
             btnAdd.TabIndex = 4;
-            btnAdd.Text = "add";
+            btnAdd.Text = "save";
             btnAdd.UseVisualStyleBackColor = true;
             btnAdd.Click += btnAdd_Click;
             // 
@@ -111,6 +116,8 @@
             // 
             // groupBox2
             // 
+            groupBox2.Controls.Add(btnEdit);
+            groupBox2.Controls.Add(btnRemove);
             groupBox2.Controls.Add(lvTasks);
             groupBox2.Location = new Point(12, 122);
             groupBox2.Name = "groupBox2";
@@ -119,13 +126,39 @@
             groupBox2.TabStop = false;
             groupBox2.Text = "Todos";
             // 
+            // btnEdit
+            // 
+            btnEdit.Location = new Point(95, 22);
+            btnEdit.Name = "btnEdit";
+            btnEdit.Size = new Size(39, 23);
+            btnEdit.TabIndex = 2;
+            btnEdit.Text = "edit";
+            btnEdit.UseVisualStyleBackColor = true;
+            // 
+            // btnRemove
+            // 
+            btnRemove.Location = new Point(140, 22);
+            btnRemove.Name = "btnRemove";
+            btnRemove.Size = new Size(57, 23);
+            btnRemove.TabIndex = 1;
+            btnRemove.Text = "remove";
+            btnRemove.UseVisualStyleBackColor = true;
+            btnRemove.Click += btnRemove_Click;
+            // 
             // lvTasks
             // 
-            lvTasks.Location = new Point(6, 22);
+            lvTasks.CheckBoxes = true;
+            lvTasks.Columns.AddRange(new ColumnHeader[] { columnHeader1 });
+            lvTasks.HideSelection = true;
+            listViewItem1.StateImageIndex = 0;
+            listViewItem2.StateImageIndex = 0;
+            lvTasks.Items.AddRange(new ListViewItem[] { listViewItem1, listViewItem2 });
+            lvTasks.Location = new Point(6, 51);
             lvTasks.Name = "lvTasks";
-            lvTasks.Size = new Size(191, 336);
+            lvTasks.Size = new Size(191, 307);
             lvTasks.TabIndex = 0;
             lvTasks.UseCompatibleStateImageBehavior = false;
+            lvTasks.View = View.List;
             // 
             // Form1
             // 
@@ -156,5 +189,8 @@
         private Button btnClear;
         private GroupBox groupBox2;
         private ListView lvTasks;
+        private ColumnHeader columnHeader1;
+        private Button btnEdit;
+        private Button btnRemove;
     }
 }
