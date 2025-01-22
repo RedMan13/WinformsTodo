@@ -28,8 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            ListViewItem listViewItem1 = new ListViewItem(new string[] { "aaaaaa" }, -1, Color.Empty, Color.LightCoral, null);
-            ListViewItem listViewItem2 = new ListViewItem("dfdfgddf");
             groupBox1 = new GroupBox();
             btnClear = new Button();
             btnAdd = new Button();
@@ -41,7 +39,6 @@
             btnEdit = new Button();
             btnRemove = new Button();
             lvTasks = new ListView();
-            columnHeader1 = new ColumnHeader();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
             SuspendLayout();
@@ -134,6 +131,7 @@
             btnEdit.TabIndex = 2;
             btnEdit.Text = "edit";
             btnEdit.UseVisualStyleBackColor = true;
+            btnEdit.Click += btnEdit_Click;
             // 
             // btnRemove
             // 
@@ -148,17 +146,14 @@
             // lvTasks
             // 
             lvTasks.CheckBoxes = true;
-            lvTasks.Columns.AddRange(new ColumnHeader[] { columnHeader1 });
             lvTasks.HideSelection = true;
-            listViewItem1.StateImageIndex = 0;
-            listViewItem2.StateImageIndex = 0;
-            lvTasks.Items.AddRange(new ListViewItem[] { listViewItem1, listViewItem2 });
             lvTasks.Location = new Point(6, 51);
             lvTasks.Name = "lvTasks";
             lvTasks.Size = new Size(191, 307);
             lvTasks.TabIndex = 0;
             lvTasks.UseCompatibleStateImageBehavior = false;
             lvTasks.View = View.List;
+            lvTasks.ItemChecked += lvTasks_ItemChecked;
             // 
             // Form1
             // 
@@ -189,7 +184,6 @@
         private Button btnClear;
         private GroupBox groupBox2;
         private ListView lvTasks;
-        private ColumnHeader columnHeader1;
         private Button btnEdit;
         private Button btnRemove;
     }
