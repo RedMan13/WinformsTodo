@@ -1,3 +1,4 @@
+using System.IO;
 using System.Linq;
 using static System.Windows.Forms.ListView;
 
@@ -6,25 +7,36 @@ namespace WinformsTodo
 
     public partial class Form1 : Form
     {
+        private static string SavePath = "%appdata%/todos.csv";
+        private Dictionary<int, TodoTask> todos = new Dictionary<int, TodoTask>();
         public Form1()
         {
             InitializeComponent();
             this.btnClear_Click(new object(), new EventArgs());
+            if (!File.Exists(SavePath)) return;
+            string[] lines = File.ReadAllLines(SavePath);
+            foreach (string line in lines)
+            {
+                TodoTask task = TodoTask.FromCSV(line);
+                todos.Add(task.id, task);
+            }
+            reflowListView();
         }
 
-        TodoTask editing = new TodoTask(string.Empty, DateTime.Now);
+        TodoTask editing = new TodoTask(string.Empty, DateTime.Today);
         private void btnClear_Click(object sender, EventArgs e)
         {
-            editing = new TodoTask(string.Empty, DateTime.Now);
+            editing = new TodoTask(string.Empty, DateTime.Today);
             txtTitle.Text = editing.title;
-            txtDate.Text = editing.due.Year.ToString().PadLeft(4, '0') + '-' + editing.due.Month.ToString().PadLeft(2, '0') + '-' + editing.due.Day.ToString().PadLeft(2, '0');
+            txtDate.Text = editing.DateTo();
         }
 
-        private Dictionary<int, TodoTask> todos = new Dictionary<int, TodoTask>();
         private void reflowListView()
         {
             lvTasks.Items.Clear();
-            foreach (var taskItem in todos)
+            Directory.CreateDirectory(Path.GetDirectoryName(SavePath));
+            StreamWriter writer = new StreamWriter(SavePath);
+            foreach (var taskItem in (from entry in todos orderby entry.Value.due ascending select entry))
             {
                 ListViewItem item = new ListViewItem();
                 item.Checked = taskItem.Value.complete;
@@ -35,29 +47,24 @@ namespace WinformsTodo
                     item.ToolTipText = "Complete";
                     item.Font = new Font(item.Font, FontStyle.Strikeout);
                 }
-                else if (taskItem.Value.due < DateTime.Now)
+                else if (taskItem.Value.due < DateTime.Today)
                 {
                     item.ToolTipText = "Missed";
                     item.BackColor = Color.LightCoral;
                 }
                 lvTasks.Items.Add(item);
+                writer.WriteLine(taskItem.Value.ToCSV());
             }
+            writer.Close();
         }
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            string[] time = txtDate.Text.Split('-');
-            if (time.Length != 3)
-            {
-                MessageBox.Show("The date " + txtDate.Text + " isnt a valid date time!!", "Invalid Date",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            int year = int.Parse(time[0]);
-            int month = int.Parse(time[1]);
-            int day = int.Parse(time[2]);
+            if (txtTitle.Text == string.Empty) return;
 
-            TodoTask task = new TodoTask(txtTitle.Text, new DateTime(year, month, day));
-            todos.Add(task.id, task);
+            editing.title = txtTitle.Text;
+            editing.DateFrom(txtDate.Text);
+            todos[editing.id] = editing;
+            this.btnClear_Click(new object(), new EventArgs());
             reflowListView();
         }
 
@@ -74,6 +81,7 @@ namespace WinformsTodo
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
+            if (lvTasks.SelectedItems.Count <= 0) return;
             int id = (int)(lvTasks.SelectedItems[0].Tag);
             for (int i = 1; i < lvTasks.SelectedItems.Count; i++)
                 lvTasks.SelectedItems[i].Selected = false;
@@ -89,8 +97,18 @@ namespace WinformsTodo
             int id = (int)(e.Item.Tag);
             TodoTask task = todos[id];
             task.complete = e.Item.Checked;
-            e.Item.ToolTipText = e.Item.Checked ? "Complete" : "";
-            e.Item.Font = new Font(e.Item.Font, e.Item.Checked ? FontStyle.Strikeout : FontStyle.Regular);
+            if (e.Item.Checked)
+            {
+                e.Item.ToolTipText = "Complete";
+                e.Item.Font = new Font(e.Item.Font, FontStyle.Strikeout);
+                e.Item.BackColor = Color.White;
+            } else
+            {
+                e.Item.ToolTipText = "Complete";
+                e.Item.Font = new Font(e.Item.Font, FontStyle.Regular);
+                if (task.due < DateTime.Today)
+                    e.Item.BackColor = Color.LightCoral;
+            }
         }
     }
 }

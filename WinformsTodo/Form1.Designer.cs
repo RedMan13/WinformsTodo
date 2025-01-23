@@ -39,6 +39,7 @@
             btnEdit = new Button();
             btnRemove = new Button();
             lvTasks = new ListView();
+            columnHeader1 = new ColumnHeader();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
             SuspendLayout();
@@ -146,6 +147,7 @@
             // lvTasks
             // 
             lvTasks.CheckBoxes = true;
+            lvTasks.Columns.AddRange(new ColumnHeader[] { columnHeader1 });
             lvTasks.HideSelection = true;
             lvTasks.Location = new Point(6, 51);
             lvTasks.Name = "lvTasks";
@@ -154,6 +156,10 @@
             lvTasks.UseCompatibleStateImageBehavior = false;
             lvTasks.View = View.List;
             lvTasks.ItemChecked += lvTasks_ItemChecked;
+            // 
+            // columnHeader1
+            // 
+            columnHeader1.Width = 191;
             // 
             // Form1
             // 
@@ -186,5 +192,6 @@
         private ListView lvTasks;
         private Button btnEdit;
         private Button btnRemove;
+        private ColumnHeader columnHeader1;
     }
 }
