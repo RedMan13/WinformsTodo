@@ -62,7 +62,7 @@ namespace WinformsTodo
             if (txtTitle.Text == string.Empty) return;
 
             editing.title = txtTitle.Text;
-            editing.DateFrom(txtDate.Text);
+            if (!editing.DateFrom(txtDate.Text)) return;
             todos[editing.id] = editing;
             this.btnClear_Click(new object(), new EventArgs());
             reflowListView();

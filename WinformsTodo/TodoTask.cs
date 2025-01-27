@@ -26,20 +26,21 @@ namespace WinformsTodo
             return due.ToShortDateString() + " | " + title;
         }
 
-        public void DateFrom(string date)
+        public bool DateFrom(string date)
         {
             string[] time = date.Split('-');
             if (time.Length != 3)
             {
                 MessageBox.Show("The date " + date + " isnt a valid date time!!", "Invalid Date",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                return false;
             }
             int year = int.Parse(time[0]);
             int month = int.Parse(time[1]);
             int day = int.Parse(time[2]);
 
             due = new DateTime(year, month, day);
+            return true;
         }
         public string DateTo() { return due.Year.ToString().PadLeft(4, '0') + '-' + due.Month.ToString().PadLeft(2, '0') + '-' + due.Day.ToString().PadLeft(2, '0'); }
 
