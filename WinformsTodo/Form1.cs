@@ -7,7 +7,7 @@ namespace WinformsTodo
 
     public partial class Form1 : Form
     {
-        private static string SavePath = "%appdata%/todos.csv";
+        private static string SavePath = "./todos.csv";
         private Dictionary<int, TodoTask> todos = new Dictionary<int, TodoTask>();
         public Form1()
         {
@@ -36,7 +36,7 @@ namespace WinformsTodo
             lvTasks.Items.Clear();
             Directory.CreateDirectory(Path.GetDirectoryName(SavePath));
             StreamWriter writer = new StreamWriter(SavePath);
-            foreach (var taskItem in (from entry in todos orderby entry.Value.due ascending select entry))
+            foreach (var taskItem in (from entry in todos orderby entry.Value.due ascending select entry).Reverse())
             {
                 ListViewItem item = new ListViewItem();
                 item.Checked = taskItem.Value.complete;
