@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using static System.Windows.Forms.ListView;
@@ -38,21 +39,7 @@ namespace WinformsTodo
             StreamWriter writer = new StreamWriter(SavePath);
             foreach (var taskItem in (from entry in todos orderby entry.Value.due ascending select entry).Reverse())
             {
-                ListViewItem item = new ListViewItem();
-                item.Checked = taskItem.Value.complete;
-                item.Text = taskItem.Value.ToString();
-                item.Tag = taskItem.Value.id;
-                if (taskItem.Value.complete)
-                {
-                    item.ToolTipText = "Complete";
-                    item.Font = new Font(item.Font, FontStyle.Strikeout);
-                }
-                else if (taskItem.Value.due < DateTime.Today)
-                {
-                    item.ToolTipText = "Missed";
-                    item.BackColor = Color.LightCoral;
-                }
-                lvTasks.Items.Add(item);
+                lvTasks.Items.Add(taskItem.Value);
                 writer.WriteLine(taskItem.Value.ToCSV());
             }
             writer.Close();
@@ -72,17 +59,14 @@ namespace WinformsTodo
         {
             SelectedListViewItemCollection items = lvTasks.SelectedItems;
             for (int i = 0; i < items.Count; i++)
-            {
-                int id = (int)(items[i].Tag);
-                todos.Remove(id);
-            }
+                todos.Remove((items[i] as TodoTask).id);
             reflowListView();
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
             if (lvTasks.SelectedItems.Count <= 0) return;
-            int id = (int)(lvTasks.SelectedItems[0].Tag);
+            int id = (lvTasks.SelectedItems[0] as TodoTask).id;
             for (int i = 1; i < lvTasks.SelectedItems.Count; i++)
                 lvTasks.SelectedItems[i].Selected = false;
             TodoTask toEdit = todos[id];
@@ -94,7 +78,7 @@ namespace WinformsTodo
 
         private void lvTasks_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
-            int id = (int)(e.Item.Tag);
+            int id = (e.Item as TodoTask).id;
             TodoTask task = todos[id];
             task.complete = e.Item.Checked;
             if (e.Item.Checked)

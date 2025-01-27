@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WinformsTodo
 {
-    public class TodoTask
+    public class TodoTask : ListViewItem
     {
         public static int ids = 0;
         public int id { get; set; }
@@ -14,16 +14,18 @@ namespace WinformsTodo
         public DateTime due { get; set; }
         public bool complete { get; set; }
 
-        public TodoTask(string title, DateTime due, bool complete = false)
+        public TodoTask(string title, DateTime due, bool complete = false) : base()
         {
             this.id = ids++;
             this.title = title;
             this.due = due;
             this.complete = complete;
         }
-        override public string ToString()
+        public void Render()
         {
-            return due.ToShortDateString() + " | " + title;
+            this.Text = due.ToShortDateString() + " | " + title;
+            this.Checked = complete;
+            
         }
 
         public bool DateFrom(string date)
