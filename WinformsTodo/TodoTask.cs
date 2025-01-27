@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WinformsTodo
 {
-    public class TodoTask : ListViewItem
+    public class TodoTask
     {
         public static int ids = 0;
         public int id { get; set; }
@@ -21,11 +21,25 @@ namespace WinformsTodo
             this.due = due;
             this.complete = complete;
         }
-        public void Render()
+        public ListViewItem Render(ListViewItem item = null)
         {
-            this.Text = due.ToShortDateString() + " | " + title;
-            this.Checked = complete;
-            
+            if (item == null) item = new ListViewItem();
+            item.Text = due.ToShortDateString() + " | " + title;
+            item.Checked = complete;
+            item.Font = new Font(item.Font, FontStyle.Regular);
+            item.Tag = this.id;
+            if (complete)
+            {
+                item.ToolTipText = "Complete";
+                item.Font = new Font(item.Font, FontStyle.Strikeout);
+                item.BackColor = Color.White;
+            }
+            else if (this.due < DateTime.Today)
+            {
+                item.ToolTipText = "Missed";
+                item.BackColor = Color.LightCoral;
+            }
+            return item;
         }
 
         public bool DateFrom(string date)
