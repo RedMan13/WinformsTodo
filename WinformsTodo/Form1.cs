@@ -1,6 +1,7 @@
 using System.IO;
 using System.Linq;
-using static System.Windows.Forms.ListView;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using static System.Windows.Forms.ListBox;
 
 namespace WinformsTodo
 {
@@ -20,7 +21,7 @@ namespace WinformsTodo
                 TodoTask task = TodoTask.FromCSV(line);
                 todos.Add(task.id, task);
             }
-            reflowListView();
+            syncUpState();
         }
 
         TodoTask editing = new TodoTask(string.Empty, DateTime.Today);
@@ -31,17 +32,28 @@ namespace WinformsTodo
             txtDate.Text = editing.DateTo();
         }
 
-        private void reflowListView()
+        private void syncUpState()
         {
-            lvTasks.Items.Clear();
+            lbTasks.Items.Clear();
             Directory.CreateDirectory(Path.GetDirectoryName(SavePath));
-            StreamWriter writer = new StreamWriter(SavePath);
-            foreach (var taskItem in (from entry in todos orderby entry.Value.due ascending select entry).Reverse())
+            StreamWriter writer;
+            try { writer = new StreamWriter(SavePath); }
+            catch
             {
-                lvTasks.Items.Add(taskItem.Value.Render());
-                writer.WriteLine(taskItem.Value.ToCSV());
+                MessageBox.Show("Cant open the todos list file for saving", "File Write Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                writer = null; 
             }
-            writer.Close();
+            var tasks = (from entry in todos orderby entry.Value.due ascending select entry).Reverse().ToArray();
+            for (int i = 0; i < tasks.Length; i++)
+            {
+                TodoTask task = tasks[i].Value;
+                lbTasks.Items.Add(task);
+                if (writer != null) writer.WriteLine(task.ToCSV());
+                if (task.complete)
+                    lbTasks.SetItemChecked(i, true);
+            }
+            if (writer != null) writer.Close();
         }
         private void btnAdd_Click(object sender, EventArgs e)
         {
@@ -51,35 +63,31 @@ namespace WinformsTodo
             if (!editing.DateFrom(txtDate.Text)) return;
             todos[editing.id] = editing;
             btnClear_Click(new object(), new EventArgs());
-            reflowListView();
+            syncUpState();
         }
 
         private void btnRemove_Click(object sender, EventArgs e)
         {
-            SelectedListViewItemCollection items = lvTasks.SelectedItems;
+            SelectedObjectCollection items = lbTasks.SelectedItems;
             for (int i = 0; i < items.Count; i++)
-                todos.Remove((int)items[i].Tag);
-            reflowListView();
+                todos.Remove((items[i] as TodoTask).id);
+            syncUpState();
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
-            if (lvTasks.SelectedItems.Count <= 0) return;
-            int id = (int)(lvTasks.SelectedItems[0].Tag);
-            for (int i = 1; i < lvTasks.SelectedItems.Count; i++)
-                lvTasks.SelectedItems[i].Selected = false;
-            TodoTask toEdit = todos[id];
+            if (lbTasks.SelectedItems.Count <= 0) return;
+            TodoTask toEdit = lbTasks.SelectedItem as TodoTask;
+            lbTasks.SelectedItem = null;
             if (toEdit == null) return;
             editing = toEdit;
             btnClear_Click(new object(), new EventArgs());
         }
 
-        private void lvTasks_ItemChecked(object sender, ItemCheckedEventArgs e)
+        private void lbTasks_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            int id = (int)(e.Item.Tag);
-            TodoTask task = todos[id];
-            task.complete = e.Item.Checked;
-            task.Render(e.Item);
+            (lbTasks.Items[e.Index] as TodoTask).complete = e.NewValue != 0;
+            syncUpState();
         }
     }
 }

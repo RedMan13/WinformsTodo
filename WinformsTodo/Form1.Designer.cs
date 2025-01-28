@@ -36,10 +36,9 @@
             label1 = new Label();
             txtTitle = new TextBox();
             groupBox2 = new GroupBox();
+            lbTasks = new CheckedListBox();
             btnEdit = new Button();
             btnRemove = new Button();
-            lvTasks = new ListView();
-            columnHeader1 = new ColumnHeader();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
             SuspendLayout();
@@ -114,15 +113,24 @@
             // 
             // groupBox2
             // 
+            groupBox2.Controls.Add(lbTasks);
             groupBox2.Controls.Add(btnEdit);
             groupBox2.Controls.Add(btnRemove);
-            groupBox2.Controls.Add(lvTasks);
             groupBox2.Location = new Point(12, 122);
             groupBox2.Name = "groupBox2";
             groupBox2.Size = new Size(203, 364);
             groupBox2.TabIndex = 1;
             groupBox2.TabStop = false;
             groupBox2.Text = "Todos";
+            // 
+            // lbTasks
+            // 
+            lbTasks.FormattingEnabled = true;
+            lbTasks.Location = new Point(6, 48);
+            lbTasks.Name = "lbTasks";
+            lbTasks.Size = new Size(191, 310);
+            lbTasks.TabIndex = 3;
+            lbTasks.ItemCheck += lbTasks_ItemCheck;
             // 
             // btnEdit
             // 
@@ -143,23 +151,6 @@
             btnRemove.Text = "remove";
             btnRemove.UseVisualStyleBackColor = true;
             btnRemove.Click += btnRemove_Click;
-            // 
-            // lvTasks
-            // 
-            lvTasks.CheckBoxes = true;
-            lvTasks.Columns.AddRange(new ColumnHeader[] { columnHeader1 });
-            lvTasks.HideSelection = true;
-            lvTasks.Location = new Point(6, 51);
-            lvTasks.Name = "lvTasks";
-            lvTasks.Size = new Size(191, 307);
-            lvTasks.TabIndex = 0;
-            lvTasks.UseCompatibleStateImageBehavior = false;
-            lvTasks.View = View.List;
-            lvTasks.ItemChecked += lvTasks_ItemChecked;
-            // 
-            // columnHeader1
-            // 
-            columnHeader1.Width = 191;
             // 
             // Form1
             // 
@@ -189,9 +180,8 @@
         private TextBox txtDate;
         private Button btnClear;
         private GroupBox groupBox2;
-        private ListView lvTasks;
         private Button btnEdit;
         private Button btnRemove;
-        private ColumnHeader columnHeader1;
+        private CheckedListBox lbTasks;
     }
 }

@@ -21,25 +21,9 @@ namespace WinformsTodo
             this.due = due;
             this.complete = complete;
         }
-        public ListViewItem Render(ListViewItem item = null)
+        override public string ToString()
         {
-            if (item == null) item = new ListViewItem();
-            item.Text = due.ToShortDateString() + " | " + title;
-            item.Checked = complete;
-            item.Font = new Font(item.Font, FontStyle.Regular);
-            item.Tag = this.id;
-            if (complete)
-            {
-                item.ToolTipText = "Complete";
-                item.Font = new Font(item.Font, FontStyle.Strikeout);
-                item.BackColor = Color.White;
-            }
-            else if (this.due < DateTime.Today)
-            {
-                item.ToolTipText = "Missed";
-                item.BackColor = Color.LightCoral;
-            }
-            return item;
+            return due.ToShortDateString() + " | " + title;
         }
 
         public bool DateFrom(string date)
