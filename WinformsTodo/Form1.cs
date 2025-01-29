@@ -50,13 +50,10 @@ namespace WinformsTodo
         private void drawState()
         {
             lbTasks.Items.Clear();
-            var tasks = (from entry in todos orderby entry.Value.due ascending select entry).Reverse().ToArray();
-            for (int i = 0; i < tasks.Length; i++)
+            foreach (var taskEnt in (from entry in todos orderby entry.Value.due descending select entry))
             {
-                TodoTask task = tasks[i].Value;
-                lbTasks.Items.Add(task);
-                if (task.complete)
-                    lbTasks.SetItemChecked(i, true);
+                TodoTask task = taskEnt.Value;
+                lbTasks.Items.Add(task, task.complete);
             }
         }
         private void btnAdd_Click(object sender, EventArgs e)
