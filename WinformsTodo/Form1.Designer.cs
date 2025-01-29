@@ -36,6 +36,7 @@
             label1 = new Label();
             txtTitle = new TextBox();
             groupBox2 = new GroupBox();
+            btnClearTasks = new Button();
             lbTasks = new CheckedListBox();
             btnEdit = new Button();
             btnRemove = new Button();
@@ -115,6 +116,7 @@
             // 
             // groupBox2
             // 
+            groupBox2.Controls.Add(btnClearTasks);
             groupBox2.Controls.Add(lbTasks);
             groupBox2.Controls.Add(btnEdit);
             groupBox2.Controls.Add(btnRemove);
@@ -124,6 +126,17 @@
             groupBox2.TabIndex = 1;
             groupBox2.TabStop = false;
             groupBox2.Text = "Todos";
+            groupBox2.Enter += groupBox2_Enter;
+            // 
+            // btnClearTasks
+            // 
+            btnClearTasks.Location = new Point(32, 22);
+            btnClearTasks.Name = "btnClearTasks";
+            btnClearTasks.Size = new Size(60, 23);
+            btnClearTasks.TabIndex = 4;
+            btnClearTasks.Text = "clear all";
+            btnClearTasks.UseVisualStyleBackColor = true;
+            btnClearTasks.Click += btnClearTasks_Click;
             // 
             // lbTasks
             // 
@@ -185,5 +198,6 @@
         private Button btnEdit;
         private Button btnRemove;
         private CheckedListBox lbTasks;
+        private Button btnClearTasks;
     }
 }

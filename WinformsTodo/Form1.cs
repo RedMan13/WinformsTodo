@@ -105,5 +105,16 @@ namespace WinformsTodo
             saveState();
         }
 
+        private void btnClearTasks_Click(object sender, EventArgs e)
+        {
+            todos.Clear();
+            lbTasks.Items.Clear();
+            saveState();
+        }
+
+        private void groupBox2_Enter(object sender, EventArgs e)
+        {
+
+        }
     }
 }
