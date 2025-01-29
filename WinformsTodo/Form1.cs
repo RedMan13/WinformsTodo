@@ -1,5 +1,6 @@
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using static System.Windows.Forms.ListBox;
 
@@ -21,7 +22,7 @@ namespace WinformsTodo
                 TodoTask task = TodoTask.FromCSV(line);
                 todos.Add(task.id, task);
             }
-            syncUpState();
+            drawState();
         }
 
         TodoTask editing = new TodoTask(string.Empty, DateTime.Today);
@@ -31,10 +32,8 @@ namespace WinformsTodo
             txtTitle.Text = editing.title;
             txtDate.Text = editing.DateTo();
         }
-
-        private void syncUpState()
+        private void saveState()
         {
-            lbTasks.Items.Clear();
             Directory.CreateDirectory(Path.GetDirectoryName(SavePath));
             StreamWriter writer;
             try { writer = new StreamWriter(SavePath); }
@@ -42,18 +41,23 @@ namespace WinformsTodo
             {
                 MessageBox.Show("Cant open the todos list file for saving", "File Write Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
-                writer = null; 
+                return;
             }
+            foreach (var taskEnt in todos) 
+                writer.WriteLine(taskEnt.Value.ToCSV());
+            writer.Close();
+        }
+        private void drawState()
+        {
+            lbTasks.Items.Clear();
             var tasks = (from entry in todos orderby entry.Value.due ascending select entry).Reverse().ToArray();
             for (int i = 0; i < tasks.Length; i++)
             {
                 TodoTask task = tasks[i].Value;
                 lbTasks.Items.Add(task);
-                if (writer != null) writer.WriteLine(task.ToCSV());
                 if (task.complete)
                     lbTasks.SetItemChecked(i, true);
             }
-            if (writer != null) writer.Close();
         }
         private void btnAdd_Click(object sender, EventArgs e)
         {
@@ -63,7 +67,8 @@ namespace WinformsTodo
             if (!editing.DateFrom(txtDate.Text)) return;
             todos[editing.id] = editing;
             btnClear_Click(new object(), new EventArgs());
-            syncUpState();
+            drawState();
+            saveState();
         }
 
         private void btnRemove_Click(object sender, EventArgs e)
@@ -71,7 +76,8 @@ namespace WinformsTodo
             SelectedObjectCollection items = lbTasks.SelectedItems;
             for (int i = 0; i < items.Count; i++)
                 todos.Remove((items[i] as TodoTask).id);
-            syncUpState();
+            drawState();
+            saveState();
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
@@ -86,8 +92,9 @@ namespace WinformsTodo
 
         private void lbTasks_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            (lbTasks.Items[e.Index] as TodoTask).complete = e.NewValue != 0;
-            syncUpState();
+            TodoTask task = lbTasks.Items[e.Index] as TodoTask;
+            task.complete = e.NewValue != 0;
+            saveState();
         }
     }
 }

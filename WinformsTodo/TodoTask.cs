@@ -31,7 +31,7 @@ namespace WinformsTodo
             string[] time = date.Split('-');
             if (time.Length != 3)
             {
-                MessageBox.Show("The date " + date + " isnt a valid date time!!", "Invalid Date",
+                MessageBox.Show("Invalid date " + date + " for task " + title, "Invalid Date",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
@@ -53,7 +53,7 @@ namespace WinformsTodo
             if (parts.Length > 1)
                 task.DateFrom(parts[1]);
             if (parts.Length > 2)
-                task.complete = parts[2] == "true";
+                task.complete = parts[2].ToLower() == "true";
             return task;
         }
         public object ToCSV() {
