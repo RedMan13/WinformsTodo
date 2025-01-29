@@ -85,6 +85,7 @@
             txtDate.PlaceholderText = "2024-04-12";
             txtDate.Size = new Size(139, 23);
             txtDate.TabIndex = 3;
+            txtDate.KeyPress += txtDate_KeyPress;
             // 
             // label2
             // 
@@ -110,6 +111,7 @@
             txtTitle.Name = "txtTitle";
             txtTitle.Size = new Size(139, 23);
             txtTitle.TabIndex = 0;
+            txtTitle.KeyPress += txtTitle_KeyPress;
             // 
             // groupBox2
             // 

@@ -30,6 +30,7 @@ namespace WinformsTodo
         {
             editing = new TodoTask(string.Empty, DateTime.Today);
             txtTitle.Text = editing.title;
+            txtTitle.Focus();
             txtDate.Text = editing.DateTo();
         }
         private void saveState()
@@ -43,7 +44,7 @@ namespace WinformsTodo
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            foreach (var taskEnt in todos) 
+            foreach (var taskEnt in todos)
                 writer.WriteLine(taskEnt.Value.ToCSV());
             writer.Close();
         }
@@ -55,6 +56,16 @@ namespace WinformsTodo
                 TodoTask task = taskEnt.Value;
                 lbTasks.Items.Add(task, task.complete);
             }
+        }
+        private void txtDate_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar != '\r') return;
+            btnAdd_Click(sender, e);
+        }
+        private void txtTitle_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar != '\r') return;
+            btnAdd_Click(sender, e);
         }
         private void btnAdd_Click(object sender, EventArgs e)
         {
@@ -93,5 +104,6 @@ namespace WinformsTodo
             task.complete = e.NewValue != 0;
             saveState();
         }
+
     }
 }
