@@ -10,7 +10,6 @@ namespace WinformsTodo
     public partial class Form1 : Form
     {
         private static string SavePath = "./todos.csv";
-        private Dictionary<int, TodoTask> todos = new Dictionary<int, TodoTask>();
         public Form1()
         {
             InitializeComponent();
@@ -20,16 +19,19 @@ namespace WinformsTodo
             foreach (string line in lines)
             {
                 TodoTask task = TodoTask.FromCSV(line);
-                todos.Add(task.id, task);
+                flpTodos.Controls.Add(task);
             }
-            drawState();
         }
 
         TodoTask editing = new TodoTask(string.Empty, DateTime.Today);
         private void btnClear_Click(object sender, EventArgs e)
         {
-            editing = new TodoTask(string.Empty, DateTime.Today);
-            txtTitle.Text = editing.title;
+            loadEditing(new TodoTask(string.Empty, DateTime.Today));
+        }
+        void loadEditing(TodoTask toEdit = null)
+        {
+            if (toEdit != null) editing = toEdit;
+            txtTitle.Text = editing.Title;
             txtTitle.Focus();
             txtDate.Text = editing.DateTo();
         }
@@ -44,18 +46,9 @@ namespace WinformsTodo
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            foreach (var taskEnt in todos)
-                writer.WriteLine(taskEnt.Value.ToCSV());
+            foreach (var taskEnt in flpTodos.Controls)
+                writer.WriteLine((taskEnt as TodoTask).ToCSV());
             writer.Close();
-        }
-        private void drawState()
-        {
-            lbTasks.Items.Clear();
-            foreach (var taskEnt in (from entry in todos orderby entry.Value.due descending select entry))
-            {
-                TodoTask task = taskEnt.Value;
-                lbTasks.Items.Add(task, task.complete);
-            }
         }
         private void txtDate_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -71,50 +64,45 @@ namespace WinformsTodo
         {
             if (txtTitle.Text == string.Empty) return;
 
-            editing.title = txtTitle.Text;
             if (!editing.DateFrom(txtDate.Text)) return;
-            todos[editing.id] = editing;
+            editing.Title = txtTitle.Text;
+            if (editing.Parent == null)
+                flpTodos.Controls.Add(editing);
             btnClear_Click(new object(), new EventArgs());
-            drawState();
             saveState();
         }
 
         private void btnRemove_Click(object sender, EventArgs e)
         {
-            SelectedObjectCollection items = lbTasks.SelectedItems;
-            for (int i = 0; i < items.Count; i++)
-                todos.Remove((items[i] as TodoTask).id);
-            drawState();
+            for (int i = 0; i < flpTodos.Controls.Count; i++) {
+                TodoTask task = flpTodos.Controls[i] as TodoTask;
+                if (task.Selected)
+                {
+                    task.Dispose();
+                    i--;
+                }
+            }
             saveState();
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
-            if (lbTasks.SelectedItems.Count <= 0) return;
-            TodoTask toEdit = lbTasks.SelectedItem as TodoTask;
-            lbTasks.SelectedItem = null;
+            TodoTask toEdit = null;
+            foreach (var taskEnt in flpTodos.Controls)
+                if ((taskEnt as TodoTask).Selected)
+                {
+                    toEdit = taskEnt as TodoTask;
+                    break;
+                }
             if (toEdit == null) return;
-            editing = toEdit;
-            btnClear_Click(new object(), new EventArgs());
-        }
-
-        private void lbTasks_ItemCheck(object sender, ItemCheckEventArgs e)
-        {
-            TodoTask task = lbTasks.Items[e.Index] as TodoTask;
-            task.complete = e.NewValue != 0;
-            saveState();
+            toEdit.Selected = false;
+            loadEditing(toEdit);
         }
 
         private void btnClearTasks_Click(object sender, EventArgs e)
         {
-            todos.Clear();
-            lbTasks.Items.Clear();
+            flpTodos.Controls.Clear();
             saveState();
-        }
-
-        private void groupBox2_Enter(object sender, EventArgs e)
-        {
-
         }
     }
 }

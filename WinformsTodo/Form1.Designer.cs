@@ -36,8 +36,8 @@
             label1 = new Label();
             txtTitle = new TextBox();
             groupBox2 = new GroupBox();
+            flpTodos = new FlowLayoutPanel();
             btnClearTasks = new Button();
-            lbTasks = new CheckedListBox();
             btnEdit = new Button();
             btnRemove = new Button();
             groupBox1.SuspendLayout();
@@ -116,8 +116,8 @@
             // 
             // groupBox2
             // 
+            groupBox2.Controls.Add(flpTodos);
             groupBox2.Controls.Add(btnClearTasks);
-            groupBox2.Controls.Add(lbTasks);
             groupBox2.Controls.Add(btnEdit);
             groupBox2.Controls.Add(btnRemove);
             groupBox2.Location = new Point(12, 122);
@@ -126,7 +126,14 @@
             groupBox2.TabIndex = 1;
             groupBox2.TabStop = false;
             groupBox2.Text = "Todos";
-            groupBox2.Enter += groupBox2_Enter;
+            // 
+            // flpTodos
+            // 
+            flpTodos.AutoScroll = true;
+            flpTodos.Location = new Point(6, 51);
+            flpTodos.Name = "flpTodos";
+            flpTodos.Size = new Size(191, 307);
+            flpTodos.TabIndex = 5;
             // 
             // btnClearTasks
             // 
@@ -137,15 +144,6 @@
             btnClearTasks.Text = "clear all";
             btnClearTasks.UseVisualStyleBackColor = true;
             btnClearTasks.Click += btnClearTasks_Click;
-            // 
-            // lbTasks
-            // 
-            lbTasks.FormattingEnabled = true;
-            lbTasks.Location = new Point(6, 48);
-            lbTasks.Name = "lbTasks";
-            lbTasks.Size = new Size(191, 310);
-            lbTasks.TabIndex = 3;
-            lbTasks.ItemCheck += lbTasks_ItemCheck;
             // 
             // btnEdit
             // 
@@ -197,7 +195,7 @@
         private GroupBox groupBox2;
         private Button btnEdit;
         private Button btnRemove;
-        private CheckedListBox lbTasks;
         private Button btnClearTasks;
+        private FlowLayoutPanel flpTodos;
     }
 }
