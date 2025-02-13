@@ -48,7 +48,11 @@ namespace WinformsTodo
             return due.ToShortDateString() + " | " + title;
         }
 
-        public void Reflow() { lblTitle.Text = this.ToString(); }
+        public void Reflow() {
+            lblTitle.Text = this.ToString();
+            BackColor = Selected ? SystemColors.Highlight : SystemColors.Control;
+            lblTitle.ForeColor = Selected ? SystemColors.ControlLightLight : SystemColors.ControlText;
+        }
 
         public bool DateFrom(string date)
         {
@@ -85,11 +89,48 @@ namespace WinformsTodo
             return title + ',' + DateTo() + ',' + Complete;
         }
 
-        private void TodoTask_Click(object sender, EventArgs e)
+        public void ToggleFocus()
         {
             Selected = !Selected;
             BackColor = Selected ? SystemColors.Highlight : SystemColors.Control;
             lblTitle.ForeColor = Selected ? SystemColors.ControlLightLight : SystemColors.ControlText;
+        }
+
+        private void TodoTask_Click(object sender, EventArgs e)
+        {
+            ToggleFocus();
+            if ((ModifierKeys & Keys.Shift) != 0)
+            {
+                int end = -1;
+                int start = -1;
+                for (int i = Parent.Controls.Count - 1; i >= 0; i--)
+                {
+                    if ((Parent.Controls[i] as TodoTask).id == this.id) 
+                        end = i;
+                    else if ((Parent.Controls[i] as TodoTask).Selected)
+                        start = i;
+                }
+                if (start == -1 || end == -1) return;
+                if (start > end)
+                {
+                    int tmp = start;
+                    start = end;
+                    end = tmp;
+                }
+                for (int i = start + 1; i < end; i++)
+                {
+                    (Parent.Controls[i] as TodoTask).Selected = true;
+                    (Parent.Controls[i] as TodoTask).Reflow();
+                }
+                return;
+            }
+            if ((ModifierKeys & Keys.Control) != 0) return;
+            for (int i = 0; i < Parent.Controls.Count; i++)
+            {
+                if ((Parent.Controls[i] as TodoTask).id == this.id) continue;
+                (Parent.Controls[i] as TodoTask).Selected = false;
+                (Parent.Controls[i] as TodoTask).Reflow();
+            }
         }
 
         private void lblTitle_Click(object sender, EventArgs e) { TodoTask_Click(sender, e); }
