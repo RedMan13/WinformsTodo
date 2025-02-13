@@ -35,7 +35,7 @@ namespace WinformsTodo
             txtTitle.Focus();
             txtDate.Text = editing.DateTo();
         }
-        private void saveState()
+        public void saveState()
         {
             Directory.CreateDirectory(Path.GetDirectoryName(SavePath));
             StreamWriter writer;

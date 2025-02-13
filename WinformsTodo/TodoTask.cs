@@ -48,7 +48,8 @@ namespace WinformsTodo
             return due.ToShortDateString() + " | " + title;
         }
 
-        public void Reflow() {
+        public void Reflow()
+        {
             lblTitle.Text = this.ToString();
             BackColor = Selected ? SystemColors.Highlight : SystemColors.Control;
             lblTitle.ForeColor = Selected ? SystemColors.ControlLightLight : SystemColors.ControlText;
@@ -105,7 +106,7 @@ namespace WinformsTodo
                 int start = -1;
                 for (int i = Parent.Controls.Count - 1; i >= 0; i--)
                 {
-                    if ((Parent.Controls[i] as TodoTask).id == this.id) 
+                    if ((Parent.Controls[i] as TodoTask).id == this.id)
                         end = i;
                     else if ((Parent.Controls[i] as TodoTask).Selected)
                         start = i;
@@ -134,5 +135,10 @@ namespace WinformsTodo
         }
 
         private void lblTitle_Click(object sender, EventArgs e) { TodoTask_Click(sender, e); }
+
+        private void chkCompleted_CheckedChanged(object sender, EventArgs e) {
+            if (ParentForm == null) return;
+            (ParentForm as Form1).saveState();
+        }
     }
 }

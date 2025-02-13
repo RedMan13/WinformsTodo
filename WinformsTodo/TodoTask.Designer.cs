@@ -40,6 +40,7 @@
             chkCompleted.Size = new Size(15, 14);
             chkCompleted.TabIndex = 0;
             chkCompleted.UseVisualStyleBackColor = true;
+            chkCompleted.CheckedChanged += chkCompleted_CheckedChanged;
             // 
             // lblTitle
             // 
